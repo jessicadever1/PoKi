@@ -143,8 +143,13 @@ FROM Poem
 LEFT JOIN Author ON Poem.AuthorId = Author.Id
 WHERE Author.Name = 'a'; 
 
+/* 16. How many poems have an emotion of sadness? */
+SELECT COUNT(PoemEmotion.PoemId) AS PoemsOfSadness
+FROM PoemEmotion
+WHERE PoemEmotion.EmotionId = 3;
+
+
 /*
-How many poems have an emotion of sadness?
 How many poems are not associated with any emotion?
 Which emotion is associated with the least number of poems?
 Which grade has the largest number of poems with an emotion of joy?
