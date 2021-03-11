@@ -100,11 +100,50 @@ ORDER BY Grade.Name;
 --ANSWER: First: 886, Second: 3160, Third: 6636, Fourth: 10806, Fifth: 11354
 
 /* 13. How many authors are in each grade? (Order your results by grade starting with 1st Grade) */
+SELECT COUNT(Author.GradeId) AS AuthorsPerGrade, Grade.Name 
+FROM Author
+LEFT JOIN Grade on Author.GradeId = Grade.Id
+GROUP BY Grade.Name
+ORDER BY Grade.Name;
 
+--ANSWER: First: 623, Second: 1437, Third: 2344, Fourth: 3288, Fifth: 3464
+
+/* 14. What is the title of the poem that has the most words? */
+SELECT TOP 1
+Title,
+WordCount
+FROM Poem
+ORDER BY WordCount DESC;
+
+--or
+
+SELECT 
+Title,
+WordCount
+FROM Poem
+	WHERE Poem.WordCount = (
+	SELECT MAX(WordCount)
+	FROM Poem);
+
+--ANSWER: The Misterious Black
+
+
+/* 15. Which author(s) have the most poems? (Remember authors can have the same name.) */
+SELECT COUNT(Author.Id) AS PoemsPerAuthor, Author.Name AS AuthorName
+FROM Poem
+LEFT JOIN Author ON Poem.AuthorId = Author.Id
+GROUP BY Author.Name
+HAVING COUNT(Author.Id) > 1
+ORDER BY COUNT(Author.Id) DESC;
+
+--ANSWER: emily
+
+SELECT *
+FROM Poem
+LEFT JOIN Author ON Poem.AuthorId = Author.Id
+WHERE Author.Name = 'a'; 
 
 /*
-What is the title of the poem that has the most words?
-Which author(s) have the most poems? (Remember authors can have the same name.)
 How many poems have an emotion of sadness?
 How many poems are not associated with any emotion?
 Which emotion is associated with the least number of poems?
