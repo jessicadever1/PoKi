@@ -4,10 +4,10 @@ Select * FROM Grade;
 -- ANSWER: First- Fifth
 
 /* 2. What emotions may be associated with a poem? */
-
+SELECT * FROM Emotion;
 SELECT COUNT(Emotion.Id) AS NumOfEmotions
 FROM Emotion;
---ANSWER: 4
+--ANSWER: 4 emotions, Anger Fear Sadness & Joy
 
 /* 3. How many poems are in the database? */
 SELECT COUNT(Poem.Id) AS NumOfPoems
@@ -147,11 +147,52 @@ WHERE Author.Name = 'a';
 SELECT COUNT(PoemEmotion.PoemId) AS PoemsOfSadness
 FROM PoemEmotion
 WHERE PoemEmotion.EmotionId = 3;
+-- ANSWER: 14,570
 
+/* 17. How many poems are not associated with any emotion? */
+SELECT COUNT(Poem.Id) AS EmotionlessPoems
+FROM PoemEmotion
+LEFT JOIN Poem ON PoemEmotion.PoemId = Poem.Id
+WHERE PoemEmotion.PoemId IS NULL OR PoemEmotion.PoemId = '';
 
-/*
-How many poems are not associated with any emotion?
-Which emotion is associated with the least number of poems?
-Which grade has the largest number of poems with an emotion of joy?
-Which gender has the least number of poems with an emotion of fear?
+SELECT COUNT(Poem.Id) AS EmotionlessPoems
+FROM Poem
+LEFT JOIN PoemEmotion on Poem.id = PoemEmotion.PoemId
+WHERE PoemEmotion.PoemId IS NULL;
+
+/* 18. Which emotion is associated with the least number of poems? */
+SELECT COUNT(EmotionId) AS NumOfPoems, Emotion.Name
+FROM PoemEmotion
+	LEFT JOIN Emotion ON PoemEmotion.EmotionId = Emotion.Id
+	GROUP BY Emotion.Name
+	ORDER BY COUNT(EmotionId) ASC;
+
+--ANSWER: Anger
+
+/* 19. Which grade has the largest number of poems with an emotion of joy? 
+COUNT(Grade.Name)
 */
+SELECT
+Grade.Name AS GradeName,
+Emotion.Name AS Emotion,
+COUNT(Emotion.Id) AS NumOfJoyPoems
+FROM PoemEmotion
+ JOIN Poem ON PoemEmotion.PoemId = Poem.Id
+ JOIN Author ON Poem.AuthorId = Author.Id
+ JOIN Grade ON Author.GradeId = Grade.Id
+ JOIN Emotion On PoemEmotion.EmotionId = Emotion.Id
+WHERE Emotion.Id = 4
+GROUP BY Grade.Name, Emotion.Name
+ORDER BY COUNT(Emotion.Id) DESC;
+
+
+
+
+/* 20. Which gender has the least number of poems with an emotion of fear? */
+SELECT 
+Gender.Name,
+Emotion.Name
+FROM PoemEmotion
+LEFT JOIN Author ON Poem.AuthorId = Author.Id
+LEFT JOIN Gender ON Author.GenderId = Gender.Id
+LEFT JOIN Poem ON Poem;
